@@ -1,0 +1,16 @@
+---
+- name: Setup git on remote host
+  hosts: gitserver
+  become: true
+  tasks:
+  - name: Install git
+    ansible.builtin.package:
+      update_cache: true
+      name: git
+      state: present
+  - name: Check git
+    ansible.builtin.command: git version
+    register: git_version_dada
+  - name: Show whatsup
+    ansible.builtin.debug:
+      msg: "So the current {{ git_version_dada }}. You are welcome!"

@@ -1,0 +1,10 @@
+---
+- name: Delete Git on instance
+  hosts: gitserver
+  become: true
+  tasks:
+  - name: Delete git
+    ansible.builtin.package:
+      name: git
+      state: absent
+...
