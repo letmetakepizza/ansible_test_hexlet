@@ -1,0 +1,30 @@
+---
+- name: №2
+  hosts: gitserver
+  become: true
+  tasks:
+  - name: Update cache
+    ansible.builtin.yum:
+      update_cache: true
+      name: '*'
+      state: latest
+  - name: Install neccesary packages
+    ansible.builtin.package:
+      name: "{{ item }}"
+      state: present
+    loop:
+      - git
+      - make
+      - nodejs
+  - name: Create new users
+    ansible.builtin.user:
+      name: "{{ item.name }}"
+      uid: "{{ item.uid }}"
+    loop:
+      - name: arya
+        uid: 322
+      - name: sansa
+        uid: 777
+      - name: tirion
+        uid: 666
+...
