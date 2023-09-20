@@ -1,8 +1,10 @@
 ---
 - name: Setup NGINX
-  hosts: gitserver
+  hosts: hexlettask
   become: true
   vars:
+    config_source: /home/mememe/yamlpractice/webserver.conf  
+    html_source: /home/mememe/yamlpractice/hexlet.html
     nginx_port: 8080
     root_dir: /usr/share/nginx/html/
   tasks:
@@ -11,12 +13,12 @@
       name: nginx
       state: present
   - name: Copy html file
-    ansible.builtin.copy:
-      src: /home/mememe/yamlpractice/hexlet.html
+    ansible.builtin.template:
+      src: "{{ html_source }}"
       dest: "{{ root_dir }}/index.html"
   - name: Copy webserver configuration
     ansible.builtin.template:
-      src: /home/mememe/yamlpractice/webserver.conf
+      src: "{{ config_source }}"
       dest: /etc/nginx/nginx.conf
     notify:
       - Reload nginx
