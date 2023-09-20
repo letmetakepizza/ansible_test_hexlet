@@ -2,6 +2,9 @@
 - name: Setup NGINX
   hosts: gitserver
   become: true
+  vars:
+    nginx_port: 8080
+    root_dir: /usr/share/nginx/html/
   tasks:
   - name: Install nginx
     ansible.builtin.package:
@@ -10,9 +13,9 @@
   - name: Copy html file
     ansible.builtin.copy:
       src: /home/mememe/yamlpractice/hexlet.html
-      dest: /usr/share/nginx/html/index.html
+      dest: "{{ root_dir }}/index.html"
   - name: Copy webserver configuration
-    ansible.builtin.copy:
+    ansible.builtin.template:
       src: /home/mememe/yamlpractice/webserver.conf
       dest: /etc/nginx/nginx.conf
     notify:
