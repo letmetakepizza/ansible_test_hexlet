@@ -16,6 +16,8 @@
     ansible.builtin.template:
       src: "{{ html_source }}"
       dest: "{{ root_dir }}/index.html"
+    notify:
+      - Reload nginx
   - name: Copy webserver configuration
     ansible.builtin.template:
       src: "{{ config_source }}"

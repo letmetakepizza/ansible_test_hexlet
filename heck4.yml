@@ -1,0 +1,41 @@
+---
+- name: Task 4
+  hosts: gitserver
+  become: true
+  vars:
+    users:
+      - jaime
+      - sansa
+      - robert
+  tasks:
+  - name: Install git
+    ansible.builtin.package:
+      name: git
+      state: present
+  - name: Create users
+    ansible.builtin.user:
+      name: "{{ item }}"
+    loop: "{{ users }}"
+  - name: Create config for users
+    ansible.builtin.copy:
+      dest: /home/{{ item }}/.gitconfig
+      owner: "{{ item }}"
+      content: |
+       [alias]             # CREATED FOR {{ item }}
+         co = checkout
+         ci = commit
+         st = status
+         br = branch
+         hist = log --pretty=format:'%h %ad | %s%d [%an]' --graph --date=short
+         type = cat-file -t
+         dump = cat-file -p
+         commend = commit --amend
+       [core]
+         excludesFile = ~/.gitignore_global
+         editor = vim
+       [user]
+         email = {{ item }}ansa@test.com
+         name = {{ item }}
+       [credential]
+         helper = store
+    loop: "{{ users }}"
