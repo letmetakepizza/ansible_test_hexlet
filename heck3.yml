@@ -1,0 +1,24 @@
+---
+- name: Setup NGINX
+  hosts: gitserver
+  become: true
+  tasks:
+  - name: Install nginx
+    ansible.builtin.package:
+      name: nginx
+      state: present
+  - name: Copy html file
+    ansible.builtin.copy:
+      src: /home/mememe/yamlpractice/hexlet.html
+      dest: /usr/share/nginx/html/index.html
+  - name: Copy webserver configuration
+    ansible.builtin.copy:
+      src: /home/mememe/yamlpractice/webserver.conf
+      dest: /etc/nginx/nginx.conf
+    notify:
+      - Reload nginx
+  handlers:
+    - name: Reload nginx
+      ansible.builtin.service:
+        name: nginx
+        state: restarted
