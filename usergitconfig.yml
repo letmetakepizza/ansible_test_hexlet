@@ -1,6 +1,6 @@
 ---
-- name: Task 4
-  hosts: gitserver
+- name: Create users and config for each
+  hosts: gitservers
   become: true
   vars:
     users:
@@ -16,6 +16,7 @@
     ansible.builtin.user:
       name: "{{ item }}"
     loop: "{{ users }}"
+    tags: user_creation                                                             # tag user_creation
   - name: Create config for users
     ansible.builtin.copy:
       dest: /home/{{ item }}/.gitconfig
@@ -39,3 +40,4 @@
        [credential]
          helper = store
     loop: "{{ users }}"
+...
