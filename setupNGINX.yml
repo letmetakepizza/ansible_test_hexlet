@@ -1,6 +1,6 @@
 ---
 - name: Setup NGINX
-  hosts: hexlettask
+  hosts: gitservers
   become: true
   vars:
     config_source: /home/mememe/yamlpractice/webserver.conf  
