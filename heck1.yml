@@ -1,6 +1,6 @@
 ---
 - name: Setup git on remote host
-  hosts: gitserver
+  hosts: gitservers
   become: true
   tasks:
   - name: Install git

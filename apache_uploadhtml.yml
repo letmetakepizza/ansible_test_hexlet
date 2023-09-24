@@ -1,0 +1,52 @@
+---
+- name: Install apache and upload html file
+  hosts: bao
+  become: true
+  vars:
+    html_FolderSource: /home/mememe/Ansible/templates/
+    html_destination: /var/www/html/
+    png_FolderSource: /home/mememe/yamlpractice/
+  tasks:
+    - name: Install apache for Debian
+      when: ansible_os_family == "Debian"     # Block for Debian
+      ansible.builtin.apt:
+        update_cache: true
+        name: apache2
+        state: present
+    
+    - name: Install apache for RHEL      
+      when: ansible_os_family == "RedHat"     # Block for RedHat
+      ansible.builtin.yum:
+        update_cache: true
+        name: httpd
+        state: present
+   
+    - name: Template html from localhost to instance
+      ansible.builtin.template:
+        src: "{{ html_FolderSource }}/hexlet.html"
+        dest: "{{ html_destination }}/index.html"
+      notify: 
+        - Restart apache Debian
+        - Restart apache RedHat   
+   
+    - name: Copy few png
+      ansible.builtin.copy:
+        src: "{{ item }}"
+        dest: "{{ html_destination }}"
+      with_fileglob: "{{ html_FolderSource }}/*.png"
+      notify:
+        - Restart apache Debian
+        - Restart apache RedHat
+  
+  handlers:
+    - name: Restart apache Debian
+      when: ansible_os_family == "Debian"
+      ansible.builtin.service:
+        name: apache2
+        state: restarted
+    - name: Restart apache RedHat
+      when: ansible_os_family == "RedHat"
+      ansible.builtin.service:
+        name: httpd
+        state: restarted
+...

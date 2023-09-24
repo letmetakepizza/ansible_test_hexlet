@@ -1,0 +1,22 @@
+- name: Install jenkins
+  hosts: bao
+  become: true
+  tasks:
+  
+  - name: Include java
+    import_tasks: javainstallation.yml 
+
+  - name: Installation according to documentation
+    ansible.builtin.shell: "curl -fsSL https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key | sudo tee /usr/share/keyrings/jenkins-keyring.asc > /dev/null"
+
+  - name: Installation step 2
+    ansible.builtin.shell: "echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] https://pkg.jenkins.io/debian-stable binary/ | sudo tee /etc/apt/sources.list.d/jenkins.list > /dev/null"
+
+  - name: Update cache
+    ansible.builtin.apt:
+      update_cache: yes
+
+  - name: Install jenkins
+    ansible.builtin.package:
+      name: jenkins
+      state: present
