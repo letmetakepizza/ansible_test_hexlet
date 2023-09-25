@@ -1,0 +1,45 @@
+---
+- name: Setup apache
+  hosts: gitservers
+  become: true
+  vars:
+    template_source: /home/mememe/Ansible/templates/
+    log_directory: /var/log/mywebserver/
+    web_directory: /var/www/html/
+    server_name: "endless cry"
+    server_message: "mercau svercau siyau!?"
+  tasks:
+    - name: Create directory for logs
+      ansible.builtin.file:
+        path: "{{ log_directory }}"
+        state: directory
+      notify:
+        - Restart apache Debian
+        - Restart apache RedHat
+        - goodmessage
+    - name: Generate index.html
+      ansible.builtin.template:
+        src: "{{ template_source }}index.html.j2"
+        dest: "{{ web_directory }}index.html"
+      notify:
+        - Restart apache Debian
+        - Restart apache RedHat
+        - goodmessage 
+    - name: add line at /etc/hosts
+      ansible.builtin.lineinfile:
+        path: /etc/hosts
+        line: 54.173.43.165 bao 
+  handlers: 
+    - name: Restart apache Debian
+      when: ansible_os_family == "Debian"
+      ansible.builtin.service:
+        name: apache2
+        state: restarted 
+    - name: Restart apache RedHat
+      when: ansible_os_family == "RedHat"
+      ansible.builtin.service:
+        name: httpd
+        state: restarted
+    - name: goodmessage
+      ansible.builtin.debug:
+        msg: It's a good message, everything is fine!
