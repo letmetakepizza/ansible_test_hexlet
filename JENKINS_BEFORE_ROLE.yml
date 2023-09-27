@@ -1,0 +1,50 @@
+---
+- name: Install jenkins and java 11
+  hosts: s
+  become: true
+  tasks:
+    - name: Block for Debian
+      when: ansible_os_family == "Debian"
+      block:
+        - name: Update cache
+          ansible.builtin.apt:
+            update_cache: true
+        - name: Install java
+          ansible.builtin.package:
+            name: openjdk-11-jre
+            state: present
+        - name: Download and save jenkin's key
+          ansible.builtin.get_url:
+            url: https://pkg.jenkins.io/debian/jenkins.io-2023.key
+            dest: /usr/share/keyrings/jenkins-keyring.asc
+        - name: Add jenkins repos to list of sources
+          ansible.builtin.copy:
+            content: "deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] https://pkg.jenkins.io/debian binary/\n"
+            dest: /etc/apt/sources.list.d/jenkins.list
+        - name: Update cache (again)
+          ansible.builtin.apt:
+            update_cache: true    
+    - name: Block for RedHat
+      when: ansible_os_family == "RedHat"
+      block:
+        - name: Install java
+          ansible.builtin.package:
+            name: java-11-openjdk
+            state: present
+        - name: Download repository file
+          ansible.builtin.get_url:
+            url: https://pkg.jenkins.io/redhat/jenkins.repo
+            dest: /etc/yum.repos.d/jenkins.repo
+        - name: Import jenkin's key
+          ansible.builtin.rpm_key:
+            key: https://pkg.jenkins.io/redhat/jenkins.io-2023.key
+            state: present
+    - name: install jenkins package
+      ansible.builtin.package:
+        name: jenkins
+        state: present
+      notify: daemon_reload
+  handlers:
+    - name: daemon_reload
+      ansible.builtin.systemd:
+        daemon_reload: true
