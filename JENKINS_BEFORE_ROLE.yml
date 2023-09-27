@@ -43,8 +43,15 @@
       ansible.builtin.package:
         name: jenkins
         state: present
-      notify: daemon_reload
+      notify: 
+        - daemon_reload
+        - start_enable_jenkins
   handlers:
     - name: daemon_reload
       ansible.builtin.systemd:
         daemon_reload: true
+    - name: start_enable_jenkins
+      ansible.builtin.service:
+        name: jenkins
+        enabled: true
+        state: started
