@@ -1,0 +1,18 @@
+pipeline {
+    agent any 
+
+    stages {
+        stage("Create Files and Directories") {
+            steps {
+                script {
+                
+                    writeFile file: 'geography.txt', text: 'west east'
+
+                    sh 'mkdir check_dir'
+                    // comment
+                    sh 'touch check_dir/done.txt'
+                }
+            }
+        }
+    }
+}
