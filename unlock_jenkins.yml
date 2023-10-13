@@ -1,0 +1,12 @@
+---
+- name: Get initial Jenkins's password
+  hosts: jenkinsPURE
+  become: true
+  tasks:
+    - name: Cat password
+      ansible.builtin.command: cat  /var/lib/jenkins/secrets/initialAdminPassword
+      register: initialpassw
+    - name: Show init passw
+      ansible.builtin.debug:
+        msg: "Jenkin's Initial Password is: {{ initialpassw.stdout }}"
+...
