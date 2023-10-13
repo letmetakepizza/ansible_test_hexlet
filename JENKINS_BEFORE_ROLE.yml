@@ -1,6 +1,6 @@
 ---
-- name: Install jenkins and java 11
-  hosts: s
+- name: Install jenkins and java 17
+  hosts: jenkinsPURE
   become: true
   tasks:
     - name: Block for Debian
@@ -9,9 +9,9 @@
         - name: Update cache
           ansible.builtin.apt:
             update_cache: true
-        - name: Install java
+        - name: Install java 17
           ansible.builtin.package:
-            name: openjdk-11-jre
+            name: openjdk-17-jre
             state: present
         - name: Download and save jenkin's key
           ansible.builtin.get_url:
@@ -23,13 +23,13 @@
             dest: /etc/apt/sources.list.d/jenkins.list
         - name: Update cache (again)
           ansible.builtin.apt:
-            update_cache: true    
+            update_cache: true
     - name: Block for RedHat
       when: ansible_os_family == "RedHat"
       block:
-        - name: Install java
+        - name: Install java 17
           ansible.builtin.package:
-            name: java-11-openjdk
+            name: java-17-openjdk
             state: present
         - name: Download repository file
           ansible.builtin.get_url:
@@ -43,7 +43,7 @@
       ansible.builtin.package:
         name: jenkins
         state: present
-      notify: 
+      notify:
         - daemon_reload
         - start_enable_jenkins
   handlers:

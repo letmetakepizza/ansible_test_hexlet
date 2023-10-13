@@ -6,7 +6,7 @@
     template_source: /home/mememe/Ansible/templates/
     log_directory: /var/log/mywebserver/
     web_directory: /var/www/html/
-    server_name: "endless cry"
+    server_name: "test server"
     server_message: "mercau svercau siyau!?"
   tasks:
     - name: Create directory for logs

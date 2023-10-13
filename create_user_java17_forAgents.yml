@@ -1,0 +1,45 @@
+---
+- name: Create user on Jenkin's agent
+  hosts: jenkins_agents
+  become: true
+  tasks:
+    - name: Create new user jenkinsAgent1
+      ansible.builtin.user:
+        name: jenkinsAgent1   # create_home by default "true"
+    - name: Checking home directory
+      ansible.builtin.command: ls -la /home/jenkinsAgent1
+      register: ls_homedir
+    - name: "Result:"
+      ansible.builtin.debug:
+        msg: "{{ ls_homedir }}"
+    - name: Install java for Debian
+      when: ansible_os_family == "Debian"
+      block:
+        - name: Update repos for Debian
+          ansible.builtin.apt:
+            update_cache: true
+        - name: Install java 17
+          ansible.builtin.package:
+            name: openjdk-17-jre
+        - name: Lets check java version
+          ansible.builtin.command: java --version
+          register: java_version_deb
+        - name: See Java version (Debian-like)
+          ansible.builtin.debug:
+            msg: "Java is: {{ java_version_deb.stdout }}"
+    - name: Install java for RedHat
+      when: ansible_os_family == "RedHat"
+      block:
+        - name: Update repos for RHEL
+          ansible.builtin.yum:
+            update_cache: true
+        - name: Install java 17
+          ansible.builtin.package:
+            name: java-17-openjdk
+        - name: Lets check java version (redhat)
+          ansible.builtin.command: java --version
+          register: java_version_RHEL
+        - name: See Java version (RHEL)
+          ansible.builtin.debug:
+            msg: "Java is: {{ java_version_RHEL.stdout }}"
+...
