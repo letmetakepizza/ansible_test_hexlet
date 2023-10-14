@@ -6,6 +6,7 @@
     - name: Create new user jenkinsAgent1
       ansible.builtin.user:
         name: jenkinsAgent1   # create_home by default "true"
+        shell: /bin/bash      # by default /bin/sh ???
     - name: Checking home directory
       ansible.builtin.command: ls -la /home/jenkinsAgent1
       register: ls_homedir
