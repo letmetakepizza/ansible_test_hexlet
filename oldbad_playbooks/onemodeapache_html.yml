@@ -7,7 +7,7 @@
     log_directory: /var/log/mywebserver/
     web_directory: /var/www/html/
     server_name: "test server"
-    server_message: "mercau svercau siyau!?"
+    server_message: "server message! checking"
   tasks:
     - name: Create directory for logs
       ansible.builtin.file:
